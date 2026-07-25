@@ -25,7 +25,10 @@ looking for repo-wide tooling.
   `SPLUNK_TOKEN` env vars), analyzes results for suspicious activity, maps
   findings to MITRE ATT&CK techniques, and writes an Obsidian-compatible
   markdown investigation note under `siem-queries/investigations/`.
-- **`detection-workflow/`** — empty; no content yet.
+- **`detection-workflow/`** — a Claude Code `PostToolUse` hook
+  (`scripts/validate-rule.sh`) that validates detection rule YAML files
+  under `rules/` on write/edit (checks `title`, `description`, and an
+  `attack.t*` MITRE tag). See `detection-workflow/CLAUDE.md`.
 - **`hello.txt`** — placeholder file, not part of any project.
 
 ## Working across subprojects
