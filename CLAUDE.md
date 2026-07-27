@@ -29,6 +29,11 @@ looking for repo-wide tooling.
   (`scripts/validate-rule.sh`) that validates detection rule YAML files
   under `rules/` on write/edit (checks `title`, `description`, and an
   `attack.t*` MITRE tag). See `detection-workflow/CLAUDE.md`.
+- **`complex-analysis/`** — pre-implementation; no code yet. Intended for
+  repeatable multi-step analysis workflows: threat intel processing
+  (ingest reports, extract TTPs, produce simulation plans) and multi-source
+  investigation (correlate Windows Security, Sysmon, Azure AD sign-in, and
+  Azure AD audit logs). See `complex-analysis/CLAUDE.md`.
 - **`hello.txt`** — placeholder file, not part of any project.
 
 ## Working across subprojects
