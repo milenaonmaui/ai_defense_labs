@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "hayabusa": {
+      "command": "/Users/milena/mcp-hayabusa/.venv/bin/python",
+      "args": ["/Users/milena/mcp-hayabusa/server.py"],
+      "cwd": "/Users/milena/mcp-hayabusa"
+    }
+  }
+}
