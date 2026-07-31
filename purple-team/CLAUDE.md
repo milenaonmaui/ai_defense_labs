@@ -48,6 +48,7 @@ markdown files under `.claude/` that define this behavior.
 
 `/purple-loop` and the skills it calls expect exercises under
 `exercises/YYYY-MM-DD/`:
+- `test-plan.md` — atomic-mapper's Atomic Red Team test plan for this exercise
 - `evtx/` — collected event logs exported after Atomic Red Team execution
 - `findings.md` — hayabusa/SIEM detection results
 - `report.md` — exercise summary

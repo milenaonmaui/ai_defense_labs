@@ -15,7 +15,8 @@ Action: Run /ingest-ti to process
 
 ### Step 2: Test Planning  
 Action: Use atomic-mapper agent to find matching Atomic Red Team tests
-Output: Test plan with commands and expected telemetry
+Output: Test plan with commands and expected telemetry, written to
+`exercises/YYYY-MM-DD/test-plan.md`
 
 ### Step 3: Execution Checklist
 Provide:
