@@ -1,3 +1,4 @@
 **/.claude/settings.local.json
 detection-workflow/hook-test.log
 detection-workflow/test.txt
+.DS_Store

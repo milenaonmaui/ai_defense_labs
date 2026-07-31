@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Detection Coverage Dashboard — Incident IR-2025-0301-01</title>
+<style>
+  :root {
+    --navy: #1E2761;
+    --ice-soft: #E9F0FC;
+    --text-dark: #2A2A33;
+    --text-muted: #6B7280;
+    --green: #0CA30C;
+    --green-bg: #E4F3EC;
+    --green-text: #1F7A4D;
+    --amber: #FAB219;
+    --amber-bg: #FBF0DF;
+    --amber-text: #8A5A00;
+    --red: #D03B3B;
+    --red-bg: #FBEAEA;
+    --red-text: #A32D2D;
+    --border: #E3E6ED;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Calibri, Arial, sans-serif;
+    background: #F7F8FA;
+    color: var(--text-dark);
+    padding: 2.5rem 1.5rem;
+  }
+  .wrap { max-width: 960px; margin: 0 auto; }
+  .eyebrow {
+    font-size: 12px; font-weight: 700; letter-spacing: 1.5px; color: var(--navy);
+    text-transform: uppercase; margin: 0 0 6px;
+  }
+  h1 { font-size: 28px; font-weight: 700; color: var(--navy); margin: 0 0 6px; }
+  .subtitle { font-size: 14px; color: var(--text-muted); margin: 0 0 1.75rem; }
+  .stats {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px; margin-bottom: 1.75rem;
+  }
+  .stat {
+    background: #fff; border: 1px solid var(--border); border-radius: 10px;
+    padding: 1rem 1.1rem;
+  }
+  .stat .label { font-size: 12.5px; color: var(--text-muted); margin: 0 0 6px; }
+  .stat .value { font-size: 26px; font-weight: 700; margin: 0; color: var(--text-dark); }
+  .stat .value.green { color: var(--green-text); }
+  .stat .value.red { color: var(--red-text); }
+  .panel {
+    background: #fff; border: 1px solid var(--border); border-radius: 10px;
+    padding: 1.25rem 1.5rem; margin-bottom: 1.5rem;
+  }
+  .toolbar {
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;
+    gap: 12px; margin-bottom: 0.9rem;
+  }
+  .legend { display: flex; gap: 16px; font-size: 12.5px; color: var(--text-muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 5px; }
+  .swatch { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+  .filter-toggle { display: flex; align-items: center; gap: 7px; font-size: 13px; color: var(--text-muted); cursor: pointer; }
+  .filter-toggle input { width: 15px; height: 15px; cursor: pointer; }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  th { text-align: left; padding: 9px 10px; color: var(--text-muted); font-weight: 600; border-bottom: 1px solid var(--border); font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.3px; }
+  td { padding: 11px 10px; border-bottom: 1px solid var(--border); }
+  th.num, td.num { text-align: right; }
+  .pill { display: inline-block; padding: 3px 11px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+  .pill.covered { background: var(--green-bg); color: var(--green-text); }
+  .pill.partial { background: var(--amber-bg); color: var(--amber-text); }
+  .pill.gap { background: var(--red-bg); color: var(--red-text); }
+  .mono { font-family: "SFMono-Regular", Consolas, monospace; color: var(--text-muted); }
+  .foot { font-size: 12px; color: var(--text-muted); margin-top: 1.5rem; text-align: center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">Security Operations</p>
+  <h1>Detection Coverage Dashboard</h1>
+  <p class="subtitle">ATT&amp;CK technique coverage for the Azure session-hijacking incident — Ref: IR-2025-0301-01</p>
+
+  <div class="stats">
+    <div class="stat">
+      <p class="label">Techniques tracked</p>
+      <p class="value" id="statTotal">4</p>
+    </div>
+    <div class="stat">
+      <p class="label">Average coverage</p>
+      <p class="value" id="statAvg">58%</p>
+    </div>
+    <div class="stat">
+      <p class="label">Fully covered</p>
+      <p class="value green" id="statCovered">1</p>
+    </div>
+    <div class="stat">
+      <p class="label">Gaps (partial or none)</p>
+      <p class="value red" id="statGaps">2</p>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="toolbar">
+      <div class="legend">
+        <span><span class="swatch" style="background:#0CA30C;"></span>Covered</span>
+        <span><span class="swatch" style="background:#FAB219;"></span>Partial</span>
+        <span><span class="swatch" style="background:#D03B3B;"></span>Gap</span>
+      </div>
+      <label class="filter-toggle">
+        <input type="checkbox" id="gapFilter" />
+        Show gaps only (partial or not detected)
+      </label>
+    </div>
+    <div style="position: relative; width: 100%; height: 260px;">
+      <canvas id="coverageChart" role="img" aria-label="Horizontal bar chart of detection coverage by ATT&CK technique. Steal Web Session Cookie T1539: 100%. Account Discovery Cloud T1087.004: 80%. Valid Accounts Cloud T1078.004: 50%. Process Injection T1055: 0%.">
+        Steal Web Session Cookie (T1539): 100%. Account Discovery: Cloud (T1087.004): 80%. Valid Accounts: Cloud (T1078.004): 50%. Process Injection (T1055): 0%.
+      </canvas>
+    </div>
+  </div>
+
+  <div class="panel">
+    <table>
+      <thead>
+        <tr>
+          <th>Technique</th>
+          <th>ID</th>
+          <th>Detection status</th>
+          <th class="num">Coverage</th>
+        </tr>
+      </thead>
+      <tbody id="coverageBody"></tbody>
+    </table>
+  </div>
+
+  <p class="foot">Generated from incident findings — for internal security use only.</p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+  const rows = [
+    { technique: "Steal Web Session Cookie", id: "T1539", status: "New detection created", coverage: 100, tier: "covered" },
+    { technique: "Account Discovery: Cloud", id: "T1087.004", status: "Existing detection", coverage: 80, tier: "covered" },
+    { technique: "Valid Accounts: Cloud", id: "T1078.004", status: "Partial (anomaly only)", coverage: 50, tier: "partial" },
+    { technique: "Process Injection", id: "T1055", status: "Not detected", coverage: 0, tier: "gap" }
+  ];
+
+  const tierColor = { covered: "#0CA30C", partial: "#FAB219", gap: "#D03B3B" };
+  const tierLabel = { covered: "Covered", partial: "Partial", gap: "Gap" };
+
+  const avg = Math.round(rows.reduce((sum, r) => sum + r.coverage, 0) / rows.length);
+  document.getElementById("statAvg").textContent = avg + "%";
+  document.getElementById("statCovered").textContent = rows.filter(r => r.tier === "covered").length;
+  document.getElementById("statGaps").textContent = rows.filter(r => r.tier !== "covered").length;
+
+  const ctx = document.getElementById("coverageChart");
+  const chart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: rows.map(r => r.technique + " (" + r.id + ")"),
+      datasets: [{
+        label: "Coverage",
+        data: rows.map(r => r.coverage),
+        backgroundColor: rows.map(r => tierColor[r.tier]),
+        borderRadius: 4,
+        barThickness: 22
+      }]
+    },
+    options: {
+      indexAxis: "y",
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: { padding: { right: 20 } },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (item) => rows[item.dataIndex].status + " — " + item.raw + "% coverage"
+          }
+        }
+      },
+      scales: {
+        x: {
+          min: 0,
+          max: 100,
+          ticks: { callback: (v) => v + "%", color: "#6B7280" },
+          grid: { color: "#E3E6ED" }
+        },
+        y: {
+          ticks: { color: "#2A2A33" },
+          grid: { display: false }
+        }
+      }
+    }
+  });
+
+  function renderTable(showGapsOnly) {
+    const body = document.getElementById("coverageBody");
+    body.innerHTML = "";
+    rows.forEach(r => {
+      if (showGapsOnly && r.tier === "covered") return;
+      const tr = document.createElement("tr");
+      tr.innerHTML =
+        '<td>' + r.technique + '</td>' +
+        '<td class="mono">' + r.id + '</td>' +
+        '<td><span class="pill ' + r.tier + '">' + tierLabel[r.tier] + '</span></td>' +
+        '<td class="num" style="font-weight:700;">' + r.coverage + '%</td>';
+      body.appendChild(tr);
+    });
+  }
+
+  function applyFilter(showGapsOnly) {
+    renderTable(showGapsOnly);
+    const filtered = showGapsOnly ? rows.filter(r => r.tier !== "covered") : rows;
+    chart.data.labels = filtered.map(r => r.technique + " (" + r.id + ")");
+    chart.data.datasets[0].data = filtered.map(r => r.coverage);
+    chart.data.datasets[0].backgroundColor = filtered.map(r => tierColor[r.tier]);
+    chart.update();
+  }
+
+  document.getElementById("gapFilter").addEventListener("change", (e) => applyFilter(e.target.checked));
+  renderTable(false);
+</script>
+</body>
+</html>
